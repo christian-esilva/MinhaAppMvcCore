@@ -14,6 +14,8 @@ using MinhaApp.Apresentacao.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MinhaApp.Infraestrutura.Contexto;
+using MinhaApp.Negocios.Interfaces;
+using MinhaApp.Infraestrutura.Repositorios;
 
 namespace MinhaApp.Apresentacao
 {
@@ -49,6 +51,11 @@ namespace MinhaApp.Apresentacao
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddScoped<ContextoApp>();
+            services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
+            services.AddScoped<IFornecedorRepositorio, FornecedorRepositorio>();
+            services.AddScoped<IEnderecoRepositorio, EnderecoRepositorio>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

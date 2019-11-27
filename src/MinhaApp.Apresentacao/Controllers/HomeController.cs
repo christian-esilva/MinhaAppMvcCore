@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MinhaApp.Apresentacao.Models;
+using MinhaApp.Apresentacao.ViewModels;
 
 namespace MinhaApp.Apresentacao.Controllers
 {

@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MinhaApp.Infraestrutura.Contexto;
 using MinhaApp.Negocios.Interfaces;
 using MinhaApp.Infraestrutura.Repositorios;
+using AutoMapper;
 
 namespace MinhaApp.Apresentacao
 {
@@ -49,6 +50,8 @@ namespace MinhaApp.Apresentacao
             services.AddDefaultIdentity<IdentityUser>()
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

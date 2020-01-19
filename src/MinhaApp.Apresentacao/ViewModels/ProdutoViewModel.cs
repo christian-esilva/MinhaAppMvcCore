@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -23,7 +24,7 @@ namespace MinhaApp.Apresentacao.ViewModels
         [StringLength(300, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 5)]
         public string Descricao { get; set; }
 
-        //public IFormFile ImagemUpload { get; set; }
+        public IFormFile ImagemUpload { get; set; }
 
         public string Imagem { get; set; }
 
@@ -37,5 +38,7 @@ namespace MinhaApp.Apresentacao.ViewModels
         public bool Ativo { get; set; }
 
         public FornecedorViewModel Fornecedor { get; set; }
+
+        public IEnumerable<FornecedorViewModel> Fornecedores { get; set; }
     }
 }

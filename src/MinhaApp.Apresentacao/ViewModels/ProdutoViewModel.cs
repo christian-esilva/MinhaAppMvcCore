@@ -24,6 +24,7 @@ namespace MinhaApp.Apresentacao.ViewModels
         [StringLength(300, ErrorMessage = "O campo {0} precisa ter entre {2} e {1} caracteres", MinimumLength = 5)]
         public string Descricao { get; set; }
 
+        [DisplayName("Imagem")]
         public IFormFile ImagemUpload { get; set; }
 
         public string Imagem { get; set; }

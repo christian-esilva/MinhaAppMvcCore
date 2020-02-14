@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MinhaApp.Infraestrutura.Contexto;
 
 namespace MinhaApp.Infraestrutura.Migrations
 {
     [DbContext(typeof(ContextoApp))]
-    partial class ContextoAppModelSnapshot : ModelSnapshot
+    [Migration("20200209230631_v2_complemento")]
+    partial class v2_complemento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

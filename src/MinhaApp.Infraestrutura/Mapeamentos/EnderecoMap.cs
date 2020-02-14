@@ -38,7 +38,6 @@ namespace MinhaApp.Infraestrutura.Mapeamentos
                 .HasColumnType("varchar(150)");
 
             builder.Property(e => e.Complemento)
-                .IsRequired()
                 .HasColumnType("varchar(50)");
 
             builder.ToTable("Endereco");

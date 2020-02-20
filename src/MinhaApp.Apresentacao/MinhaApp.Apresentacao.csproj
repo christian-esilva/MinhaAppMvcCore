@@ -19,4 +19,9 @@
     <ProjectReference Include="..\MinhaApp.Infraestrutura\MinhaApp.Infraestrutura.csproj" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Folder Include="wwwroot\imagens\" />
+  </ItemGroup>
+
 </Project>

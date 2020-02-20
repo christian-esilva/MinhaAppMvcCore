@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using MinhaApp.Apresentacao.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -29,6 +30,7 @@ namespace MinhaApp.Apresentacao.ViewModels
 
         public string Imagem { get; set; }
 
+        [Moeda]
         [Required(ErrorMessage = "O campo {0} é obrigatório")]
         public decimal Valor { get; set; }
 

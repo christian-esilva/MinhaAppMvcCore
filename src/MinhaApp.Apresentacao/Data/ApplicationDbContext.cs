@@ -13,6 +13,5 @@ namespace MinhaApp.Apresentacao.Data
             : base(options)
         {
         }
-        public DbSet<MinhaApp.Apresentacao.ViewModels.ProdutoViewModel> ProdutoViewModel { get; set; }
     }
 }

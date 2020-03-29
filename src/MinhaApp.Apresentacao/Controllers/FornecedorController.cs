@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MinhaApp.Apresentacao.Extensions;
 using MinhaApp.Apresentacao.ViewModels;
 using MinhaApp.Negocios.Entidades;
 using MinhaApp.Negocios.Interfaces;
 
 namespace MinhaApp.Apresentacao.Controllers
 {
+    [Authorize]
     public class FornecedorController : BaseController
     {
         private readonly IFornecedorRepositorio _fornecedorRepositorio;
@@ -23,31 +26,32 @@ namespace MinhaApp.Apresentacao.Controllers
             _fornecedorServico = fornecedorServico;
         }
 
+        [AllowAnonymous]
         [Route("lista-de-fornecedores")]
         public async Task<IActionResult> Index()
         {
             return View(_mapper.Map<IEnumerable<FornecedorViewModel>>(await _fornecedorRepositorio.ObterTodos()));
         }
 
+        [AllowAnonymous]
         [Route("detalhes-fornecedor/{id:guid}")]
         public async Task<IActionResult> Details(Guid id)
         {
             var fornecedorViewModel = await ObterFornecedorEndereco(id);
 
-            if (fornecedorViewModel == null)
-            {
-                return NotFound();
-            }
+            if (fornecedorViewModel == null) return NotFound();
 
             return View(fornecedorViewModel);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Adicionar")]
         [Route("novo-fornecedor")]
         public IActionResult Create()
         {
             return View();
         }
 
+        [ClaimsAuthorize("Fornecedor", "Adicionar")]
         [Route("novo-fornecedor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -63,18 +67,18 @@ namespace MinhaApp.Apresentacao.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         [Route("editar-fornecedor/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var fornecedorViewModel = await ObterFornecedorProdutosEndereco(id);
 
-            if (fornecedorViewModel == null)
-            {
-                return NotFound();
-            }
+            if (fornecedorViewModel == null) return NotFound();
+
             return View(fornecedorViewModel);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         [Route("editar-fornecedor/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -92,20 +96,19 @@ namespace MinhaApp.Apresentacao.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [ClaimsAuthorize("Fornecedor", "Excluir")]
         [Route("excluir-fornecedor/{id:guid}")]
         [HttpGet]
         public async Task<IActionResult> Delete(Guid id)
         {
             var fornecedorViewModel = await ObterFornecedorEndereco(id);
 
-            if (fornecedorViewModel == null)
-            {
-                return NotFound();
-            }
+            if (fornecedorViewModel == null) return NotFound();
 
             return View(fornecedorViewModel);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Excluir")]
         [Route("excluir-fornecedor/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -122,6 +125,7 @@ namespace MinhaApp.Apresentacao.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [AllowAnonymous]
         [Route("obter-endereco-fornecedor/{id:guid}")]
         [HttpGet]
         public async Task<IActionResult> ObterEndereco(Guid id)
@@ -133,6 +137,7 @@ namespace MinhaApp.Apresentacao.Controllers
             return PartialView("_DetalhesEndereco", fornecedor);
         }
 
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         [Route("atualizar-endereco-fornecedor/{id:guid}")]
         [HttpGet]
         public async Task<IActionResult> AtualizarEndereco(Guid id)
@@ -144,6 +149,7 @@ namespace MinhaApp.Apresentacao.Controllers
             return PartialView("_AtualizarEndereco", new FornecedorViewModel { Endereco = fornecedor.Endereco });
         }
 
+        [ClaimsAuthorize("Fornecedor", "Editar")]
         [Route("atualizar-endereco-fornecedor/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]

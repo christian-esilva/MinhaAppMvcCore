@@ -15,13 +15,16 @@ namespace MinhaApp.Apresentacao.Controllers
     {
         private readonly IProdutoRepositorio _produtoRepositorio;
         private readonly IFornecedorRepositorio _fornecedorRepositorio;
+        private readonly IProdutoServico _produtoServico;
         private readonly IMapper _mapper;
 
-        public ProdutoController(IProdutoRepositorio produtoRepositorio, IMapper mapper, IFornecedorRepositorio fornecedorRepositorio)
+        public ProdutoController(IProdutoRepositorio produtoRepositorio, IMapper mapper, IFornecedorRepositorio fornecedorRepositorio,
+            IProdutoServico produtoServico, INotificador notificador) : base(notificador)
         {
             _produtoRepositorio = produtoRepositorio;
             _mapper = mapper;
             _fornecedorRepositorio = fornecedorRepositorio;
+            _produtoServico = produtoServico;
         }
 
         [Route("lista-produtos")]
@@ -56,14 +59,14 @@ namespace MinhaApp.Apresentacao.Controllers
             if (!ModelState.IsValid) return View(produtoViewModel);
 
             var imgPrefixo = $"{Guid.NewGuid()}_";
-
             if(! await UploadArquivo(produtoViewModel.ImagemUpload, imgPrefixo))
             {
                 return View(produtoViewModel);
             }
             produtoViewModel.Imagem = imgPrefixo + produtoViewModel.ImagemUpload.FileName;
+            await _produtoServico.Adicionar(_mapper.Map<Produto>(produtoViewModel));
 
-            await _produtoRepositorio.Adicionar(_mapper.Map<Produto>(produtoViewModel));
+            if (!OperacaoValida()) return View(produtoViewModel);
 
             return RedirectToAction(nameof(Index));
         }
@@ -104,7 +107,8 @@ namespace MinhaApp.Apresentacao.Controllers
             produtoAtualizacao.Valor = produtoViewModel.Valor;
             produtoAtualizacao.Ativo = produtoViewModel.Ativo;
 
-            await _produtoRepositorio.Atualizar(_mapper.Map<Produto>(produtoAtualizacao));
+            await _produtoServico.Atualizar(_mapper.Map<Produto>(produtoAtualizacao));
+            if (!OperacaoValida()) return View(produtoViewModel);
 
             return RedirectToAction(nameof(Index));
         }
@@ -128,7 +132,11 @@ namespace MinhaApp.Apresentacao.Controllers
 
             if (produto == null) return NotFound();
 
-            await _produtoRepositorio.Remover(id);
+            await _produtoServico.Remover(id);
+
+            if (!OperacaoValida()) return View(produto);
+
+            TempData["Sucesso"] = "Produto excluído com sucesso!";
 
             return RedirectToAction(nameof(Index));
         }

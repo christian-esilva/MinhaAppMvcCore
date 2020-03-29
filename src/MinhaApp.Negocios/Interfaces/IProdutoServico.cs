@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MinhaApp.Negocios.Interfaces
 {
-    public interface IProdutoServico
+    public interface IProdutoServico : IDisposable
     {
         Task Adicionar(Produto produto);
         Task Atualizar(Produto produto);

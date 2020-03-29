@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace MinhaApp.Negocios.Interfaces
 {
-    public interface IFornecedorServico
+    public interface IFornecedorServico : IDisposable
     {
         Task Adicionar(Fornecedor fornecedor);
         Task Atualizar(Fornecedor fornecedor);

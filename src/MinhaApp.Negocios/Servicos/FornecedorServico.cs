@@ -1,36 +1,73 @@
 ﻿using MinhaApp.Negocios.Entidades;
+using MinhaApp.Negocios.Entidades.Validacoes;
 using MinhaApp.Negocios.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MinhaApp.Negocios.Servicos
 {
     public class FornecedorServico : BaseServico, IFornecedorServico
     {
-        public Task Adicionar(Fornecedor fornecedor)
+        private readonly IFornecedorRepositorio _fornecedorRepositorio;
+        private readonly IEnderecoRepositorio _enderecoRepositorio;
+
+        public FornecedorServico(IFornecedorRepositorio fornecedorRepositorio, IEnderecoRepositorio enderecoRepositorio,
+            INotificador notificador) : base(notificador)
         {
-            // Validar o estado da entidade
-
-
-            // Verificar senão existe o mesmo documento
-            throw new NotImplementedException();
+            _enderecoRepositorio = enderecoRepositorio;
+            _fornecedorRepositorio = fornecedorRepositorio;
         }
 
-        public Task Atualizar(Fornecedor fornecedor)
+        public async Task Adicionar(Fornecedor fornecedor)
         {
-            throw new NotImplementedException();
+            if (!ExecutarValidacao(new FornecedorValidacao(), fornecedor) 
+                || !ExecutarValidacao(new EnderecoValidacao(), fornecedor.Endereco)) return;
+
+            if(_fornecedorRepositorio.Buscar(f => f.Documento == fornecedor.Documento).Result.Any())
+            {
+                Notificar("O documento informado já está cadastrado"); 
+                return;
+            }
+
+            await _fornecedorRepositorio.Adicionar(fornecedor);
         }
 
-        public Task AtualizarEndereco(Endereco endereco)
+        public async Task Atualizar(Fornecedor fornecedor)
         {
-            throw new NotImplementedException();
+            if (!ExecutarValidacao(new FornecedorValidacao(), fornecedor)) return;
+
+            if (_fornecedorRepositorio.Buscar(f => f.Documento == fornecedor.Documento && fornecedor.Id != fornecedor.Id).Result.Any())
+            {
+                Notificar("O documento informado já está cadastrado");
+                return;
+            }
+
+            await _fornecedorRepositorio.Atualizar(fornecedor);
         }
 
-        public Task Remover(Guid id)
+        public async Task AtualizarEndereco(Endereco endereco)
         {
-            throw new NotImplementedException();
+            if (!ExecutarValidacao(new EnderecoValidacao(), endereco)) return;
+
+            await _enderecoRepositorio.Atualizar(endereco);
+        }
+
+        public async Task Remover(Guid id)
+        {
+            if (_fornecedorRepositorio.ObterFornecedorProdutosEndereco(id).Result.Produtos.Any())
+            {
+                Notificar("O fornecedor possui produtos cadastrados!");
+                return;
+            }
+
+            await _fornecedorRepositorio.Remover(id);
+        }
+
+        public void Dispose()
+        {
+            _fornecedorRepositorio?.Dispose();
+            _enderecoRepositorio?.Dispose();
         }
     }
 }
